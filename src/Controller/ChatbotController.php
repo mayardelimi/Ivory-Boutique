@@ -11,22 +11,14 @@ use Symfony\Component\Routing\Attribute\Route;
 class ChatbotController extends AbstractController
 {
     #[Route('/api/chat', name: 'api_chat', methods: ['POST'])]
-    public function chat(
-        Request $request,
-        Chatbot $chatbot,
-        ProductRepository $productRepository,
-    ): JsonResponse {
-        $payload = json_decode($request->getContent(), true);
-        $userMessage = trim($payload['message'] ?? '');
-
-        if ($userMessage === '') {
-            return $this->json(['reply' => 'Please tell me what you\'re looking for!'], 400);
-        }
-
-        $availableCategories = $productRepository->getDistinctCategoryNames();
-        $filters = $chatbot->extractFilters($userMessage, $availableCategories);
+    public function chat(Request $request, Chatbot $chatbot, ProductRepository $productRepository,):
+    JsonResponse {
+        $content = json_decode($request->getContent(), true);
+        $usermessage = trim($content['message'] ?? '');
+        $availableCat = $productRepository->getDistinctCategoryNames();
+        $filters = $chatbot->extractFilters($usermessage, $availableCat);
         $products = $productRepository->findByFilters($filters);
-        $reply = $chatbot->formatReply($userMessage, $products);
+        $reply = $chatbot->formatReply($usermessage, $products);
 
         return $this->json([
             'reply' => $reply,

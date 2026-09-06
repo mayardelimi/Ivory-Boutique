@@ -47,7 +47,6 @@ class ProductRepository extends ServiceEntityRepository
         /** @var Product[] $products */
         $products = $qb->getQuery()->getResult();
 
-        // Price includes discount_pct, computed in PHP — can't be a WHERE clause.
         if (!empty($filters['maxPrice'])) {
             $products = array_values(array_filter(
                 $products,

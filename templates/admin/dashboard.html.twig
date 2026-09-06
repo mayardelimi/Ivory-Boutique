@@ -1,0 +1,333 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block main %}
+    <style>
+        /* ─── Base Palette ─── */
+        :root {
+            --lux-bg: #f5f5f7;
+            --lux-card: #ffffff;
+            --lux-text: #1d1d1f;
+            --lux-text-muted: #86868b;
+            --lux-border: rgba(0, 0, 0, 0.06);
+            --lux-dark: #2c2c2e;
+            --lux-dark-hover: #3a3a3c;
+            --lux-accent: #636366;
+            --lux-gold: #c9a96e;
+        }
+
+        .dashboard-wrapper {
+            background-color: var(--lux-bg);
+            padding: 2rem;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* ─── Stat Cards ─── */
+        .lux-stat-card {
+            background: var(--lux-card);
+            border: 1px solid var(--lux-border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .lux-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--lux-dark), var(--lux-accent));
+            opacity: 0.8;
+        }
+
+        .lux-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .lux-stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .lux-stat-card .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--lux-text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .lux-stat-card .stat-value {
+            font-size: 2.25rem;
+            font-weight: 300;
+            color: var(--lux-text);
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+
+        /* Card variants */
+        .stat-users .stat-icon { background: linear-gradient(135deg, #e8e8ed, #d2d2d7); color: var(--lux-dark); }
+        .stat-paid .stat-icon { background: linear-gradient(135deg, #d1d1d6, #aeaeb2); color: var(--lux-dark); }
+        .stat-pending .stat-icon { background: linear-gradient(135deg, #c7c7cc, #8e8e93); color: #ffffff; }
+
+        /* ─── Content Cards ─── */
+        .lux-card {
+            background: var(--lux-card);
+            border: 1px solid var(--lux-border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .lux-card:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .lux-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--lux-border);
+        }
+
+        .lux-card-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--lux-text);
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+
+        .lux-card-header .header-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--lux-dark), var(--lux-accent));
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        /* ─── Best Seller ─── */
+        .best-seller-item {
+            background: linear-gradient(135deg, #fafafa, #f5f5f7);
+            border: 1px solid var(--lux-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .best-seller-item:hover {
+            border-color: rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .best-seller-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--lux-text);
+            margin-bottom: 0.25rem;
+        }
+
+        .best-seller-sub {
+            font-size: 0.8125rem;
+            color: var(--lux-text-muted);
+            font-weight: 400;
+        }
+
+        .lux-badge {
+            background: var(--lux-dark);
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* ─── Table ─── */
+        .lux-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .lux-table thead th {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--lux-text-muted);
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--lux-border);
+            background: transparent;
+        }
+
+        .lux-table tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        .lux-table tbody tr:hover {
+            background: rgba(0, 0, 0, 0.015);
+        }
+
+        .lux-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--lux-border);
+            font-size: 0.9375rem;
+        }
+
+        .lux-table tbody td:first-child {
+            font-weight: 500;
+            color: var(--lux-text);
+        }
+
+        .lux-table tbody td:last-child {
+            font-weight: 600;
+            color: var(--lux-dark);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem;
+            color: var(--lux-text-muted);
+            font-size: 0.9375rem;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+
+    <div class="dashboard-wrapper">
+        <!-- #1 : Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4 animate-in delay-1">
+                <div class="lux-stat-card stat-users">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-label">Utilisateurs</div>
+                    <div class="stat-value">{{ stats.users|number_format(0, ',', ' ') }}</div>
+                </div>
+            </div>
+            <div class="col-md-4 animate-in delay-2">
+                <div class="lux-stat-card stat-paid">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-label">Commandes Payées</div>
+                    <div class="stat-value">{{ stats.paid|number_format(0, ',', ' ') }}</div>
+                </div>
+            </div>
+            <div class="col-md-4 animate-in delay-3">
+                <div class="lux-stat-card stat-pending">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-label">En Attente</div>
+                    <div class="stat-value">{{ stats.unpaid|number_format(0, ',', ' ') }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- #2 : Two Column Data Layout -->
+        <div class="row g-4">
+            <!-- Left Column: Best Seller Card -->
+            <div class="col-md-5 animate-in delay-2">
+                <div class="lux-card h-100">
+                    <div class="lux-card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h4>Top Produit de la Semaine</h4>
+                    </div>
+
+                    {% if best_seller %}
+                        <div class="best-seller-item">
+                            <div>
+                                <div class="best-seller-name">{{ best_seller.name }}</div>
+                                <div class="best-seller-sub">Performances récentes</div>
+                            </div>
+                            <span class="lux-badge">{{ best_seller.totalSales }} vendus</span>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-inbox mb-2" style="font-size: 1.5rem; opacity: 0.4;"></i>
+                            <p class="mb-0">Aucune vente enregistrée cette semaine.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Column: Income List Data -->
+            <div class="col-md-7 animate-in delay-3">
+                <div class="lux-card h-100">
+                    <div class="lux-card-header">
+                        <div class="header-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Revenus (7 Derniers Jours)</h4>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="lux-table">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th class="text-end">Chiffre d'Affaires</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for day in income_chart %}
+                                <tr>
+                                    <td>{{ day.date|date('d/m/Y') }}</td>
+                                    <td class="text-end">day.dailyIncome | price</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="2" class="empty-state">
+                                        Aucun revenu perçu sur cette période.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

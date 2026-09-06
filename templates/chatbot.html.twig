@@ -1,45 +1,5 @@
 {# templates/chatbot.html.twig #}
-<div id="chat-widget">
-    <button id="chat-fab" aria-label="Open chat">
-        <svg id="fab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-    </button>
 
-    <div id="chat-window">
-        <div id="chat-header">
-            <div class="chat-avatar">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-            </div>
-            <div class="chat-title">
-                <div class="chat-name">Shopping Friend</div>
-                <div class="chat-status">Online</div>
-            </div>
-            <button id="chat-close" aria-label="Close chat">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-        </div>
-
-
-        <div id="chat-messages"></div>
-
-
-        <form id="chat-form">
-            <input type="text" id="chat-input" placeholder="What are you looking for?" autocomplete="off">
-            <button type="submit" aria-label="Send">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-            </button>
-        </form>
-    </div>
-</div>
 
 <style>
     #chat-widget {
@@ -75,7 +35,7 @@
         bottom: 68px;
         right: 0;
         width: 340px;
-        max-height: 480px;
+        max-height: 600px;
         background: #fff;
         border-radius: 20px;
         box-shadow: 0 24px 64px rgba(43, 47, 50, 0.14);
@@ -96,7 +56,6 @@
         pointer-events: auto;
     }
 
-    /* ─── Header ─── */
     #chat-header {
         padding: 18px 20px;
         background: #fafafa;
@@ -164,7 +123,6 @@
     #chat-messages::-webkit-scrollbar { width: 3px; }
     #chat-messages::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 3px; }
 
-    /* ─── Message Bubbles ─── */
     .msg {
         max-width: 82%;
         padding: 12px 16px;
@@ -318,6 +276,48 @@
         }
     }
 </style>
+<div id="chat-widget">
+    <button id="chat-fab" aria-label="Open chat">
+        <svg id="fab-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+    </button>
+
+    <div id="chat-window">
+        <div id="chat-header">
+            <div class="chat-avatar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </div>
+            <div class="chat-title">
+                <div class="chat-name">Shopping Friend</div>
+                <div class="chat-status">Online</div>
+            </div>
+            <button id="chat-close" aria-label="Close chat">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+
+        <div id="chat-messages"></div>
+
+
+        <form id="chat-form">
+            <input type="text" id="chat-input" placeholder="What are you looking for?" autocomplete="off">
+            <button type="submit" aria-label="Send">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
 
 <script>
     (function() {
@@ -347,7 +347,6 @@
         fab.addEventListener('click', toggleChat);
         closeBtn.addEventListener('click', toggleChat);
 
-        // Welcome message on first open
         let welcomed = false;
         fab.addEventListener('click', () => {
             if (!welcomed && windowEl.classList.contains('open')) {
@@ -361,12 +360,10 @@
             const userText = input.value.trim();
             if (!userText) return;
 
-            // User message
             messages.innerHTML += `<div class="msg user">${escapeHtml(userText)}</div>`;
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
-            // Fetch
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

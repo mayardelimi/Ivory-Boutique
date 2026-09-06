@@ -13,19 +13,17 @@ class Chatbot
 
     public function extractFilters(string $userMessage, array $availableCategories = []): array
     {
-        $categoryList = empty($availableCategories)
-            ? 'unknown'
-            : implode(', ', $availableCategories);
+        $categoryList = implode(', ', $availableCategories);
 
         $systemPrompt = <<<PROMPT
         You are a filter-extraction assistant for a clothing store.
         Given a customer's message, return ONLY a JSON object with these optional keys:
-        category (string — MUST be exactly one of: {$categoryList}, or omitted if none fit),
+        category (string — MUST be exactly one of: {$categoryList},and if not but same meaning return the ones from this list or omitted if none fit ),
         color (string),
         size (string, e.g. "S", "M", "L", "XL" ,"OneSize"),
         maxPrice (number),
         keywords (short string of relevant descriptive words, for matching against product name/description).
-        Omit any key you cannot confidently infer. Return {} if nothing is clear.
+        .Return {} if nothing is clear.
         PROMPT;
 
         $response = $this->httpClient->request('POST', $this->ollamaBaseUrl . '/api/chat', [
@@ -56,19 +54,16 @@ class Chatbot
 
         $productSummaries = array_map(
             fn($p) => sprintf(
-                '- %s (%s, $%.2f)%s',
+                "%s (%s) - $%s: %s",
                 $p->getName(),
-                $p->getCategory()?->getName() ?? 'uncategorized',
+                $p->getCategory()?->getName(),
                 $p->getPrice(),
-                $p->getDescription() ? ' — ' . mb_strimwidth($p->getDescription(), 0, 100, '...') : ''
+                $p->getDescription()
             ),
             $products
         );
 
-        $prompt = "Customer asked: \"$userMessage\"\n\nMatching products:\n"
-            . implode("\n", $productSummaries)
-            . "\n\nWrite reply (2 sentences) recommending these items.";
-
+        $prompt = "Customer asked: " . $userMessage . " Matching products: " . implode(', ', $productSummaries) . "Write reply (2 sentences) recommending these items.";
         $response = $this->httpClient->request('POST', $this->ollamaBaseUrl . '/api/chat', [
             'json' => [
                 'model' => $this->ollamaModel,
