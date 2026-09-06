@@ -63,16 +63,16 @@ The platform combines a traditional e-commerce backend with automated services a
 - JavaScript
 
 ---
-## Few Screenshots
+## some Screenshots
 
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](assets/screenshots/home.png)
 
 ### Chatbot
-![Chatbot](screenshots/chatbot.png)
+![Chatbot](assets/screenshots/chatbot.png)
 
 ### Products
-![Product Recommendation](screenshots/products.png)
+![Product](assets/screenshots/products.png)
 
 ### Product details
-![Product Recommendation](screenshots/Productdetails.png)
+![Product details](assets/screenshots/Productdetails.png)
