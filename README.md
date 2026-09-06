@@ -75,4 +75,4 @@ The platform combines a traditional e-commerce backend with automated services a
 ![Product](assets/screenshots/products.png)
 
 ### Product details
-![Product details](assets/screenshots/Productdetails.png)
+![Product details](assets/screenshots/productdetails.png)
